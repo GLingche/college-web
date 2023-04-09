@@ -1,4 +1,4 @@
-# vue-manage
+# college-web
 
 ## Project setup
 ```
