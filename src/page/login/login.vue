@@ -16,7 +16,7 @@
           </div>
           <span>or use your email for registration</span>
           <input type="text" placeholder="Name"  v-model="form.name" />
-          <input type="email" placeholder="Email"  v-model="form.email" />
+          <input type="email" placeholder="Email"  v-model="form.username" />
           <input type="password" placeholder="Password" v-model="form.password"/>
           <button @click="signUp">Sign Up</button>
         </form>
@@ -30,7 +30,7 @@
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
           <span>or use your account</span>
-          <input type="email" placeholder="Email"  v-model="form.email"  />
+          <input type="email" placeholder="Email"  v-model="form.username"  />
           <input type="password" placeholder="Password"  v-model="form.password" />
           <a href="#">Forgot your password?</a>
           <button @click="signIn">Sign In</button>
@@ -93,14 +93,11 @@ export default {
     signUp() {
       console.log(this.form, "ss");
     },
-    signIn() {
-      console.log(this.form, "dfs");
-    },
     changePlanel() {
       console.log(this.isIn);
       this.isIn = !this.isIn;
     },
-    login() {
+    signIn() {
       getMenu(this.form).then(({ data: res }) => {
         console.log(res);
         if (res.code === 20000) {

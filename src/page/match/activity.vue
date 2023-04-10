@@ -1,10 +1,10 @@
 <template>
-    <div>商品管理</div>
+    <div>赛事活动管理</div>
 </template>
 
 <script>
 export default {
-    name:'Mall',
+    name:'Activity',
     data(){
         return {}
     }

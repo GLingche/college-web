@@ -45,7 +45,7 @@ import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
 export default {
-  name: "user",
+  name: "User",
   components: {
     CommonForm,
     CommonTable,

@@ -1,10 +1,10 @@
 <template>
-    <div>我是pageTow页面</div>
+    <div>赛事选手管理</div>
 </template>
 
 <script>
 export default {
-    name:'PageTwo',
+    name:'Competitor',
     data() {
         return {}
     }

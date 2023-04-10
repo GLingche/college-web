@@ -1,10 +1,10 @@
 <template>
-    <div>我是pageOne页面</div>
+    <div>我是ad页面</div>
 </template>
 
 <script>
 export default {
-    name:'PageOne',
+    name:'Ad',
     data() {
         return {}
     }
