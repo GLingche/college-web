@@ -84,7 +84,7 @@ export default {
           message: "获取成功",
         },
       };
-    } else if (username === "xiaoxiao" && password === "xiaoxiao") {
+    } else if (username === "user1" && password === "user1") {
       return {
         code: 20000,
         data: {
@@ -97,11 +97,63 @@ export default {
               url: "home/index",
             },
             {
-              path: "/video",
-              name: "video",
-              label: "商品管理",
+              label: "赞助管理",
+              icon: "location",
+              path: "/sponsor",
+              children: [
+                {
+                  path: "/ad",
+                  name: "ad",
+                  label: "广告信息管理",
+                  icon: "setting",
+                  url: "sponsor/ad.vue",
+                },
+                {
+                  path: "/price",
+                  name: "price",
+                  label: "奖品信息管理",
+                  icon: "setting",
+                  url: "sponsor/price.vue",
+                },
+              ],
+            },
+          ],
+          token: Mock.Random.guid(),
+          message: "获取成功",
+        },
+      };
+    } else if (username === "user2" && password === "user2") {
+      return {
+        code: 20000,
+        data: {
+          menu: [
+            {
+              path: "/",
+              name: "home",
+              label: "首页",
+              icon: "s-home",
+              url: "home/index",
+            },
+            {
+              label: "赛事管理",
               icon: "video-play",
-              url: "mall/index",
+              path: "/match",
+              children: [
+                {
+                  path: "/activity",
+                  name: "activity",
+                  label: "赛事活动管理",
+                  icon: "setting",
+                  url: "match/activity.vue",
+                },
+                {
+                  path: "/competitor",
+                  name: "competitor",
+                  label: "赛事选手管理",
+                  icon: "setting",
+                  url: "match/competitor.vue",
+                },
+              ],
             },
           ],
           token: Mock.Random.guid(),
