@@ -54,7 +54,8 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  // mode: "history",
+  base: "/college-web/",
   routes,
 });
 
@@ -63,6 +64,7 @@ router.beforeEach((to, from, next) => {
   console.log(store.state.user.token);
   const token = store.state.user.token;
   if (!token && to.name !== "login") {
+    console.log("未放行");
     next({ name: "login" });
   } else if (token && to.name === "login") {
     next({ name: "home" });

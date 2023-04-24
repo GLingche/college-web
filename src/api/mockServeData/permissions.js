@@ -80,7 +80,7 @@ export default {
               ],
             },
           ],
-          token: Mock.Random.guid(),
+          token: "Mock.Random.guid()ffffffffffffffffffffffffffffff",
           message: "获取成功",
         },
       };

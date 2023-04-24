@@ -1,4 +1,7 @@
 module.exports = {
+  publicPath: "./",
+  // outputDir:'dist/college-web',
+  // path.posix.resolve(this.basePath, routePath),
   pages: {
     index: {
       //入口
@@ -10,14 +13,15 @@ module.exports = {
   devServer: {
     https: false,
     hotOnly: false,
-    proxy: {
-      "/api": {
-        target: "http://192.168.31.94:8080",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/api": "",
-        },
-      },
-    },
+    port: 8060,
+    // proxy: {
+    //   "/api": {
+    //     target: "http://192.168.98.190:8085",
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       "^/api": "",
+    //     },
+    //   },
+    // },
   },
 };

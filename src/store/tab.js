@@ -39,16 +39,21 @@ export default {
     setMenu(state, val) {
       state.menu = val;
       Cookie.set("menu", JSON.stringify(val));
+      sessionStorage.setItem("menu", JSON.stringify(val));
     },
     clearMenu(state) {
       state.menu = [];
       Cookie.remove("menu");
+      sessionStorage.removeItem("menu");
     },
     addMenu(state, router) {
-      if (!Cookie.get("menu")) {
+      console.log(sessionStorage.getItem("menu"), "session");
+      if (!Cookie.get("menu") && !sessionStorage.getItem("menu")) {
         return;
       }
-      const menu = JSON.parse(Cookie.get("menu"));
+      const menu = Cookie.get("menu")
+        ? JSON.parse(Cookie.get("menu"))
+        : JSON.parse(sessionStorage.getItem("menu"));
       state.menu = menu;
       const menuArray = [];
       menu.forEach((item) => {

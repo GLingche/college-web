@@ -1,5 +1,5 @@
 import axios from "axios";
-import config from "../config/index";
+import config from "../config/httpConfig";
 import store from ".././store";
 
 axios.defaults.headers.post["Content-Type"] =
@@ -28,7 +28,7 @@ class HttpRequest {
     instance.interceptors.request.use(
       function (config) {
         // 在发送请求之前做些什么
-        console.log(store.state.user.token)
+        console.log(store.state.user.token);
         if (store.state.user.token) {
           store.commit("getToken");
           console.log(store.state.user.token);

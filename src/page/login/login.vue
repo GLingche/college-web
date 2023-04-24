@@ -7,7 +7,7 @@
       :class="[isIn ? 'right-panel-active' : '']"
     >
       <div class="form-container sign-up-container">
-        <form :model="form" @submit.prevent>
+        <form :model="upFrom" @submit.prevent>
           <h1>Create Account</h1>
           <div class="social-container">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -15,9 +15,13 @@
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Name"  v-model="form.name" />
-          <input type="email" placeholder="Email"  v-model="form.username" />
-          <input type="password" placeholder="Password" v-model="form.password"/>
+          <input type="text" placeholder="Name" v-model="upFrom.username" />
+          <input type="email" placeholder="Email" v-model="upFrom.password" />
+          <input
+            type="password"
+            placeholder="Password"
+            v-model="upFrom.Password"
+          />
           <button @click="signUp">Sign Up</button>
         </form>
       </div>
@@ -30,8 +34,12 @@
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
           <span>or use your account</span>
-          <input type="email" placeholder="Email"  v-model="form.username"  />
-          <input type="password" placeholder="Password"  v-model="form.password" />
+          <input type="email" placeholder="Email" v-model="form.username" />
+          <input
+            type="password"
+            placeholder="Password"
+            v-model="form.password"
+          />
           <a href="#">Forgot your password?</a>
           <button @click="signIn">Sign In</button>
         </form>
@@ -69,13 +77,14 @@
 <script>
 // import Mock from 'mockjs'
 import { getMenu } from "../../api/data";
-
+import { getUser, registerUser, login } from "../../api/test";
 export default {
   name: "login",
   data() {
     return {
       isIn: true,
       form: {},
+      upFrom: {},
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
@@ -92,12 +101,32 @@ export default {
   methods: {
     signUp() {
       console.log(this.form, "ss");
+      registerUser(this.upFrom)
+        .then(({ data: res }) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     changePlanel() {
-      console.log(this.isIn);
       this.isIn = !this.isIn;
     },
+    check() {
+      //邮箱校验
+      var reg = /^[\w.-]+@[0-9a-zA-Z]+(\.[a-zA-Z]{2,4}){1,2}$/;
+      return reg.test(this.form.username);
+    },
     signIn() {
+      console.log(this.check());
+      // login(this.form)
+      //   .then(({ data: res }) => {
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+
       getMenu(this.form).then(({ data: res }) => {
         console.log(res);
         if (res.code === 20000) {
@@ -110,10 +139,26 @@ export default {
           this.$message.warning(res.data.message);
         }
       });
-      //    const token =  Mock.random.guid()
-      //    this.$store.commit('setToken',token)
-      //    this.$router.push({name:'home'})
+      // const token = Mock.random.guid();
+      // this.$store.commit("setToken", token);
+      // this.$router.push({ name: "home" });
     },
+  },
+  async mounted() {
+    // let data = await fetch("http://192.168.98.190:8085/login/verify", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ Account: "user1", Passwrod : "123" }),
+    //   mode: "cors",
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+    // console.log(data, "fdsfds");
+    // let data = await getUser();
+    // console.log(data, "this.data");
   },
 };
 </script>
