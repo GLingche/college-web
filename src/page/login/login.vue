@@ -101,13 +101,14 @@ export default {
   methods: {
     signUp() {
       console.log(this.form, "ss");
-      registerUser(this.upFrom)
-        .then(({ data: res }) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.$message.success("注册成功！");
+      // registerUser(this.upFrom)
+      //   .then(({ data: res }) => {
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     },
     changePlanel() {
       this.isIn = !this.isIn;

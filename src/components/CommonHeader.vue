@@ -19,10 +19,11 @@
     </div>
     <div class="r-content">
       <span style="margin-right: 36px; cursor: pointer">
+        <el-button type="primary" size="small" style="">实名认证</el-button>
         <el-badge :value="messCount">
           <i
             class="el-icon-bell"
-            style="font-size: 32px"
+            style="font-size: 32px; margin-left: 12px"
             @click="$router.push({ path: '/home/notify' })"
           >
           </i>

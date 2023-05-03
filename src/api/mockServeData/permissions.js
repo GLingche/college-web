@@ -160,6 +160,40 @@ export default {
           message: "获取成功",
         },
       };
+    } else if (username === "user" && password === "user") {
+      return {
+        code: 20000,
+        data: {
+          menu: [
+            {
+              path: "/",
+              name: "home",
+              label: "首页",
+              icon: "s-home",
+              url: "home/index",
+            },
+          ],
+          token: Mock.Random.guid(),
+          message: "获取成功",
+        },
+      };
+    } else if (username === "test" && password === "test") {
+      return {
+        code: 20000,
+        data: {
+          menu: [
+            {
+              path: "/",
+              name: "home",
+              label: "首页",
+              icon: "s-home",
+              url: "home/index",
+            },
+          ],
+          token: Mock.Random.guid(),
+          message: "获取成功",
+        },
+      };
     } else {
       return {
         code: -999,
