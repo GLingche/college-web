@@ -1,16 +1,267 @@
 <template>
-    <div>赛事选手管理</div>
+  <div class="manage">
+    <el-dialog
+      :title="operateType === 'add' ? '新增用户' : '更新用户'"
+      :visible.sync="isShow"
+    >
+      <common-form
+        :formLabel="operateFormLabel"
+        :form="operateForm"
+        :inline="true"
+        ref="form"
+      >
+      </common-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isShow = false">取消</el-button>
+        <el-button type="primary" @click="confirm">确定</el-button>
+      </div>
+    </el-dialog>
+    <div class="manger-header">
+      <el-button type="primary" @click="addUser">+ 新增</el-button>
+      <common-form
+        :formLabel="formLabel"
+        :form="searchForm"
+        :inline="true"
+        ref="form"
+      >
+        <el-button type="primary" @click="getList(searchForm.keyword)"
+          >搜索</el-button
+        >
+      </common-form>
+    </div>
+    <common-table
+      :tableData="tableData"
+      :tableLabel="tableLabel"
+      :config="config"
+      :control = "true"
+      @changePage="getList()"
+      @edit="editUser"
+      @del="delUser"
+    ></common-table>
+  </div>
 </template>
 
 <script>
+import CommonForm from "../../components/CommonForm.vue";
+import CommonTable from "../../components/CommonTable.vue";
+import { getUser } from "../../api/data";
 export default {
-    name:'Competitor',
-    data() {
-        return {}
-    }
-}
+  name: "Competitor",
+  components: {
+    CommonForm,
+    CommonTable,
+  },
+  data() {
+    return {
+      operateType: "add",
+      isShow: false,
+      operateFormLabel: [
+        {
+          model: "name",
+          label: "姓名",
+          type: "input",
+        },
+        {
+          model: "sno",
+          label: "编号",
+          type: "input",
+        },
+             {
+          model: "snof",
+          label: "学校",
+          type: "input",
+        },
+             {
+          model: "snoa",
+          label: "类型",
+          type: "input",
+        },
+             {
+          model: "snod",
+          label: "事项",
+          type: "input",
+        },
+            {
+          model: "snoda",
+          label: "名次",
+          type: "input",
+        },
+        {
+          model: "sex",
+          label: "性别",
+          type: "select",
+          opts: [
+            {
+              label: "男",
+              value: 1,
+            },
+            {
+              label: "女",
+              value: 0,
+            },
+          ],
+        },
+        {
+          model: "birth",
+          label: "起始时间",
+          type: "date",
+        },
+        {
+          model: "addr",
+          label: "地点",
+          type: "input",
+        },
+      ],
+      operateForm: {
+        name: "",
+        addr: "",
+        age: "",
+        birth: "",
+        sex: "",
+      },
+      formLabel: [
+        {
+          model: "keyword",
+          label: "",
+          type: "input",
+        },
+      ],
+      searchForm: {
+        keyword: "",
+      },
+      tableData: [],
+      tableLabel: [
+        {
+          prop: "name",
+          label: "姓名",
+        },
+        {
+          prop: "age",
+          label: "性别",
+        },
+        {
+          prop: "sexLabel",
+          label: "编号",
+        },
+        {
+          prop: "birth",
+          label: "学校",
+          width: 200,
+        },
+        {
+          prop: "addr",
+          label: "类型",
+          width: 320,
+        },
+        {
+          prop: "addra",
+          label: "起始时间",
+          width: 320,
+        },
+        {
+          prop: "addre",
+          label: "地点",
+          width: 320,
+        },
+         {
+          prop: "addrf",
+          label: "名次",
+        },
+        {
+          prop: "addrq",
+          label: "状态",
+        },
+          {
+          prop: "addrqa",
+          label: "操作",
+        },
+      ],
+      config: {
+        page: 1,
+        total: 30,
+      },
+    };
+  },
+  methods: {
+    confirm() {
+      if (this.operateType === "edit") {
+        this.$http.post("/user/edit", this.operateForm).then((res) => {
+          console.log(res);
+          this.isShow = false;
+          this.getList();
+        });
+      } else {
+        this.$http.post("/user/add", this.operateForm).then((res) => {
+          console.log(res);
+          this.isShow = false;
+          this.getList();
+        });
+      }
+    },
+    addUser() {
+      this.isShow = true;
+      this.operateType = "add";
+      this.operateForm = {
+        name: "",
+        addr: "",
+        age: "",
+        birth: "",
+        sex: "",
+      };
+    },
+    editUser(row) {
+      this.operateType = "edit";
+      this.isShow = true;
+      this.operateForm = row;
+    },
+    delUser(row) {
+      this.$confirm("此操作将删除改行，是否继续?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        const id = row.id;
+        console.log(row, "this");
+        this.$http
+          .get("/user/del", {
+            params: { id },
+          })
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "成功删除",
+            });
+            this.getList();
+          });
+      });
+    },
+    getList(name = "") {
+      this.config.loading = true;
+      name ? (this.config.page = 1) : "";
+      console.log(this.config.page, "test");
+      getUser({
+        page: this.config.page,
+        name,
+      }).then(({ data: res }) => {
+        this.tableData = res.list.map((item) => {
+          item.sexLabel = item.sex === 0 ? "女" : "男";
+          return item;
+        });
+        this.config.total = res.count;
+        this.config.loading = false;
+      });
+    },
+  },
+  created() {
+    // this.getList();
+  },
+};
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.manger-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 </style>

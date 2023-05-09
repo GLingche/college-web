@@ -30,6 +30,7 @@
       </common-form>
     </div>
     <common-table
+      :control="true"
       :tableData="tableData"
       :tableLabel="tableLabel"
       :config="config"

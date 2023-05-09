@@ -15,8 +15,8 @@
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Name" v-model="upFrom.username" />
-          <input type="email" placeholder="Email" v-model="upFrom.password" />
+          <input type="text" placeholder="Name" v-model="upFrom.Name" />
+          <input type="email" placeholder="Email" v-model="upFrom.Account" />
           <input
             type="password"
             placeholder="Password"
@@ -34,11 +34,11 @@
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
           <span>or use your account</span>
-          <input type="email" placeholder="Email" v-model="form.username" />
+          <input type="email" placeholder="Email" v-model="form.Account" />
           <input
             type="password"
             placeholder="Password"
-            v-model="form.password"
+            v-model="form.Password"
           />
           <a href="#">Forgot your password?</a>
           <button @click="signIn">Sign In</button>
@@ -120,26 +120,34 @@ export default {
     },
     signIn() {
       console.log(this.check());
-      // login(this.form)
-      //   .then(({ data: res }) => {
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-
-      getMenu(this.form).then(({ data: res }) => {
-        console.log(res);
-        if (res.code === 20000) {
+      login(this.form)
+        .then(({ data: res }) => {
+          // console.log(res, "fdaf1111111111");
+          // res = JSON.parse(res);
+          // console.log(res, "fdaf1111111111");
           this.$store.commit("clearMenu");
           this.$store.commit("setMenu", res.data.menu);
           this.$store.commit("setToken", res.data.token);
           this.$store.commit("addMenu", this.$router);
           this.$router.push({ name: "home" });
-        } else {
-          this.$message.warning(res.data.message);
-        }
-      });
+          // console.log(res, "fdsfdsfs");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // getMenu(this.form).then(({ data: res }) => {
+      //   console.log(res);
+      //   if (res.code === 20000) {
+      //     this.$store.commit("clearMenu");
+      //     this.$store.commit("setMenu", res.data.menu);
+      //     this.$store.commit("setToken", res.data.token);
+      //     this.$store.commit("addMenu", this.$router);
+      //     this.$router.push({ name: "home" });
+      //   } else {
+      //     this.$message.warning(res.data.message);
+      //   }
+      // });
       // const token = Mock.random.guid();
       // this.$store.commit("setToken", token);
       // this.$router.push({ name: "home" });
