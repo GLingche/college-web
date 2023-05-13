@@ -1,11 +1,5 @@
 import axiosHttp from "./axiosHttp";
 
-export const getUser = () => {
-  return axiosHttp.request({
-    url: "/busComments",
-    method: "get",
-  });
-};
 
 export const login = (param) => {
   console.log(param, "login");
@@ -36,6 +30,22 @@ export const registerUser = (param) => {
       Name: param.Name,
       Account: param.Account,
       Password: param.Password,
+    },
+  });
+};
+
+export const indentify = (param) => {
+  console.log(param, "fdsfa");
+  console.log(param.Name, "up");
+  return axiosHttp.request({
+    url: "/login/sign",
+    method: "post",
+    params: {
+      Name: param.Name,
+      addr: param.addr,
+      age: param.age,
+      birth:param.birth,
+      sex:param.sex
     },
   });
 };

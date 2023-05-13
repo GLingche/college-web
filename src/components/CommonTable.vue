@@ -18,6 +18,20 @@
           <el-button size="mini" type="danger" @click="handerDelete(scope.row)"
             >删除</el-button
           >
+          <el-button
+            v-if="manager"
+            size="mini"
+            type="danger"
+            @click="authManager(scope.row)"
+            >授权管理员</el-button
+          >
+          <el-button
+            v-if="manager"
+            size="mini"
+            type="danger"
+            @click="changeStatus(scope.row)"
+            >注销</el-button
+          >
           <el-switch
             style="margin-left: 16px"
             v-if="show"
@@ -49,10 +63,17 @@ export default {
     tableData: Array,
     tableLabel: Array,
     config: Object,
-    control: Boolean,
+    control: {
+      type: Boolean,
+      default: true,
+    },
+    manager: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
-    return { value: true,show:this.control };
+    return { value: true, show: this.control };
   },
   methods: {
     handerEdit(row) {
@@ -66,16 +87,23 @@ export default {
     },
     change(s) {
       console.log(s, "status");
-     this.$confirm("此操作将改变当前的审批状态，是否继续", "提示", {
+      this.$confirm("此操作将改变当前的审批状态，是否继续", "提示", {
         confirmButtonText: "确认",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-        
-      }).catch(() =>{
-            this.value = true;
-      });
+      })
+        .then(() => {})
+        .catch(() => {
+          this.value = !this.value;
+        });
     },
+    changeStatus(row){
+      this.$emit("cancal",row)
+
+    },
+    authManager(row){
+        this.$emit("authManager",row);
+    } 
   },
 };
 </script>

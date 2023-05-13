@@ -51,6 +51,14 @@ const routes = [
     name: "login",
     component: () => import("../page/login/login.vue"),
   },
+  {
+    path: '/home/notify',
+    name: 'Notify',
+    meta: {
+      title: '消息通知',
+    },
+    component: () =>  import("../page/home/notify.vue"),
+  }
 ];
 
 const router = new VueRouter({

@@ -64,6 +64,7 @@
 <script>
 import CommonForm from "./CommonForm.vue";
 import { mapState } from "vuex";
+import {indentify} from "../api/test";
 export default {
   name: "CommonHeader",
   components: {
@@ -145,6 +146,16 @@ export default {
       tags: (state) => state.tab.tabsList,
     }),
   },
+  confirm(){
+            // indentify(this.operateForm)
+      //   .then(({ data: res }) => {
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+
+  }
 };
 </script>
 
