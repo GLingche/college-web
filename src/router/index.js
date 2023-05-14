@@ -58,7 +58,15 @@ const routes = [
       title: '消息通知',
     },
     component: () =>  import("../page/home/notify.vue"),
-  }
+  },
+  {
+    path: '/home/profile',
+    name: 'Profile',
+    meta: {
+      title: '个人信息',
+    },
+    component:  () =>  import("../page/home/profile.vue"),
+  },
 ];
 
 const router = new VueRouter({

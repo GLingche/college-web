@@ -1,70 +1,75 @@
 <template>
   <div class="wrap">
-    <h2 class="head-title">WELCOME TO COLLEGE COMPETITION WEBSITE</h2>
-    <div
-      class="container"
-      id="container"
-      :class="[isIn ? 'right-panel-active' : '']"
-    >
-      <div class="form-container sign-up-container">
-        <form :model="upFrom" @submit.prevent>
-          <h1>Create Account</h1>
-          <div class="social-container">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"> <i class="fab fa-google-plus-g"></i> </a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          </div>
-          <span>or use your email for registration</span>
-          <input type="text" placeholder="Name" v-model="upFrom.Name" />
-          <input type="email" placeholder="Email" v-model="upFrom.Account" />
-          <input
-            type="password"
-            placeholder="Password"
-            v-model="upFrom.Password"
-          />
-          <button @click="signUp">Sign Up</button>
-        </form>
-      </div>
-      <div class="form-container sign-in-container">
-        <form :model="form" @submit.prevent>
-          <h1>Sign in</h1>
-          <div class="social-container">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"> <i class="fab fa-google-plus-g"></i> </a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          </div>
-          <span>or use your account</span>
-          <input type="email" placeholder="Email" v-model="form.username" />
-          <input
-            type="password"
-            placeholder="Password"
-            v-model="form.password"
-          />
-          <a href="#">Forgot your password?</a>
-          <button @click="signIn">Sign In</button>
-        </form>
-      </div>
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-left">
-            <h1>Welcome Back!</h1>
-            <p>
-              To keep connected with us please login with your personal info
-            </p>
-            <button class="ghost" id="signIn" @click="changePlanel()">
-              Sign In
-            </button>
-          </div>
-          <div class="overlay-panel overlay-right">
-            <h1>Hello,Friend!</h1>
-            <p>Enter your personal details and start journey with us</p>
-            <button class="ghost" id="signUp" @click="changePlanel()">
-              Sign Up
-            </button>
+    <div class="bigWrap">
+      <h2 class="head-title">WELCOME TO COLLEGE COMPETITION WEBSITE</h2>
+
+      <div
+        class="container"
+        id="container"
+        :class="[isIn ? 'right-panel-active' : '']"
+      >
+        <div class="form-container sign-up-container">
+          <form :model="upFrom" @submit.prevent>
+            <h1>Create Account</h1>
+            <div class="social-container">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"> <i class="fab fa-google-plus-g"></i> </a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your email for registration</span>
+            <input type="text" placeholder="Name" v-model="upFrom.Name" />
+            <input type="email" placeholder="Email" v-model="upFrom.Account" />
+            <input
+              type="password"
+              placeholder="Password"
+              v-model="upFrom.Password"
+            />
+            <button @click="signUp">Sign Up</button>
+          </form>
+        </div>
+        <div class="form-container sign-in-container">
+          <form :model="form" @submit.prevent>
+            <h1>Sign in</h1>
+            <div class="social-container">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"> <i class="fab fa-google-plus-g"></i> </a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
+            <input type="email" placeholder="Email" v-model="form.username" />
+            <input
+              type="password"
+              placeholder="Password"
+              v-model="form.password"
+            />
+            <a href="#">Forgot your password?</a>
+            <button @click="signIn">Sign In</button>
+          </form>
+        </div>
+        <div class="overlay-container">
+          <div class="overlay">
+            <div class="overlay-panel overlay-left">
+              <h1>Welcome Back!</h1>
+              <p>
+                To keep connected with us please login with your personal info
+              </p>
+              <button class="ghost" id="signIn" @click="changePlanel()">
+                Sign In
+              </button>
+            </div>
+            <div class="overlay-panel overlay-right">
+              <h1>Hello,Friend!</h1>
+              <p>Enter your personal details and start journey with us</p>
+              <button class="ghost" id="signUp" @click="changePlanel()">
+                Sign Up
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      <h2 style="temp"></h2>
     </div>
+
     <footer>
       <p>
         Created with<i class="fa fa-heart"></i>by
@@ -77,7 +82,7 @@
 <script>
 import Mock from "mockjs";
 import { getMenu } from "../../api/data";
-import {registerUser, login } from "../../api/test";
+import { registerUser, login } from "../../api/test";
 export default {
   name: "login",
   data() {
@@ -198,12 +203,10 @@ export default {
 
 .head-title {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  top: 5%;
   font-size: 48px;
   font-weight: bold;
   font-style: italic;
   color: rgb(137, 233, 224);
-  position: absolute;
   z-index: 999;
   text-shadow: 0 14px 28px rgba(0, 0, 0, 0.6), 0 10px 10px rgba(0, 0, 0, 0.6);
 }
@@ -272,6 +275,18 @@ input {
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
+}
+
+.bigWrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  width: 70vw;
+  max-width: 100%;
+  min-height: 80vh;
 }
 .container {
   background-color: transparent;

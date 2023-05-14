@@ -40,7 +40,10 @@
           <img class="user" :src="userImg" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人信息</el-dropdown-item>
+          <el-dropdown-item
+            @click.native="$router.push({ path: '/home/profile' })"
+            >个人信息</el-dropdown-item
+          >
           <el-dropdown-item @click.native="logOut">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -64,7 +67,7 @@
 <script>
 import CommonForm from "./CommonForm.vue";
 import { mapState } from "vuex";
-import {indentify} from "../api/test";
+import { indentify } from "../api/test";
 export default {
   name: "CommonHeader",
   components: {
@@ -109,12 +112,12 @@ export default {
           label: "地址",
           type: "input",
         },
-          {
+        {
           model: "type",
           label: "账号类型",
           type: "input",
         },
-          {
+        {
           model: "identity",
           label: "身份证号",
           type: "input",
@@ -146,16 +149,15 @@ export default {
       tags: (state) => state.tab.tabsList,
     }),
   },
-  confirm(){
-            // indentify(this.operateForm)
-      //   .then(({ data: res }) => {
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-
-  }
+  confirm() {
+    // indentify(this.operateForm)
+    //   .then(({ data: res }) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+  },
 };
 </script>
 
