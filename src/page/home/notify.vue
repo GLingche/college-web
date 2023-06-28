@@ -55,11 +55,11 @@
               @change="onValueChange(item.id, item.selected)"
             ></el-checkbox>
             <div class="msg-tip-icon" v-show="!item.isRead"></div>
-            <span>{{ item.title }}</span>
+            <span>{{ item.message }}</span>
           </div>
           <div class="item-content" @click="readMsg(item)">
             <span v-html="item.context" style="padding-left: 34px"></span>
-            <span>{{ item.sendTime }}</span>
+            <span>{{ item.time }}</span>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@
 </template>
 <script>
 import Pagin from "../../components/pagination.vue"; //分页组件
-import { SelectAdminNotice, SelectUserNotice ,ChangeUserState,SelectByAccount,SeleteByUserType} from "../../api/test";
+import { SelectAdminNotice, SelectUserNotice ,ChangeUserState,SelectByAccount,SeleteByUserType,ChangeMatchState} from "../../api/test";
 export default {
   components: { Pagin },
   created() {
@@ -155,10 +155,17 @@ export default {
     },
   },
   created(){
-    SeleteByUserType().then((res) => {
-      console.log(res);
-      this.msgList = res.data;
-    });
+// ChangeMatchState().then((res) => {
+//       console.log(res);
+//       this.msgList = res.data;
+//     });
+     SelectByAccount({
+        page: this.pageConfig.index,
+        size: this.pageConfig.size,
+      }).then((res) => {
+        console.log(res);
+        this.msgList = res.data.records;
+      });
     // SelectByAccount().then((res) => {
     //   console.log(res);
     //   this.msgList = res.data;

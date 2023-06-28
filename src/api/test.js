@@ -1,5 +1,6 @@
 import axiosHttp from "./axiosHttp";
-
+import store from ".././store";
+let token = store.state.user.token;
 export const login = (param) => {
   console.log(param, "login");
   return axiosHttp.request({
@@ -10,18 +11,6 @@ export const login = (param) => {
       Password: param.Password,
       how: param.how,
       ip: param.ip,
-    },
-  });
-};
-
-export const token = (param) => {
-  console.log(param, "login");
-  return axiosHttp.request({
-    url: "/CEMS/login/token",
-    method: "post",
-    params: {
-      Account: param.Account,
-      Password: param.Password,
     },
   });
 };
@@ -60,24 +49,23 @@ export const registerUser = (param) => {
 
 export const indentify = (param) => {
   // console.log(param, "fdsfa");
-  // console.log(param.Name, "up");
+  console.log(token, "up111111111");
   return axiosHttp.request({
     url: "/CEMS/Visitor/RealName",
     method: "post",
     params: {
-      Password: "123",
-      Account: "admin3",
-      UserName: "游客注册",
-      Sex: "男",
-      Nation: "汉族",
-      birthday: "2020-10-10",
-      DocumentType: "居民身份证",
-      DocumentNumber: "4290052005566",
-      Number: "1852221156",
-      Unit: "广州城市理工学院",
-      Origin: "广东省",
-      MAddress: "通讯地址",
-      UserType: "赞助商",
+      token:token,
+      UserName: param.UserName,
+      Sex: param.Sex,
+      Nation: param.Nation,
+      birthday: param.birthday,
+      DocumentType: param.DocumentType,
+      DocumentNumber: param.DocumentNumber,
+      Number: param.Number,
+      Unit: param.Unit,
+      Origin: param.Origin,
+      MAddress: param.MAddress,
+      UserType: param.UserType,
     },
   });
 };
@@ -283,7 +271,7 @@ export const SeleteAll = (param) => {
     params: {
       page: param.page,
       size: param.size,
-      token: param.token,
+      token: token,
       sponsors: param.sponsors,
       type: param.type,
     },
@@ -323,7 +311,8 @@ export const BuildMatch = (param) => {
       Place: param.place,
       Number: param.number,
       DocumentNumber: param.documentNumber,
-      Account: "user2",
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjIsInVzZXJ0eXBlIjoi5Li75Yqe5pa5IiwiYWNjb3VudCI6InVzZXIyIiwiaWF0IjoxNjg3OTU0MDE4LCJleHAiOjE2ODgwNDA0MTh9.ugMDdfXj9qOxetGtd-a9ZZ_L5I5oPcCcwM5kSbNvWsxoC3un5hO5521pkZTgmWCJ1r1MGLSM7KQ_wlElHivXbA",
     },
   });
 };
@@ -339,39 +328,41 @@ export const DeleteById = (param) => {
 
 export const ChangeMatchState = (param) => {
   return axiosHttp.request({
-    url: "/CEMS/Vetting/ChangeMatchState",
+    url: "/CEMS/Vetting/ChangeState",
     method: "PUT",
     params: {
-      MatchId: param.id,
-      Account: "user2",
+      id: "34",
+      MatchId: "",
+      Account: "user100",
       State: "Y",
     },
   });
 };
 
 //消息模块
-
+//审核
 export const SelectAdminNotice = (param) => {
   return axiosHttp.request({
-    url: "//CEMS/User/SelectAdminNotice",
+    url: "CEMS/Vetting/SeleteByToken",
     method: "POST",
-    data: {
+    params: {
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
       page: param.page,
       size: param.size,
     },
   });
 };
-
+//通知
 export const SelectByAccount = (param) => {
   return axiosHttp.request({
-    url: "/CEMS/Notice/SelectByAccount",
+    url: "/CEMS/Notice/SelectByToken",
     method: "POST",
     params: {
-      UserType: "管理员",
-      Account: "admin1",
-      page: 1,
-      size: 10,
-      token: "tset",
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
+      page: param.page,
+      size: param.size,
     },
   });
 };
@@ -413,36 +404,36 @@ export const ChangeUserState = (param) => {
 ///个人信息
 export const SeleteByAccountLog = (param) => {
   return axiosHttp.request({
-    url: "/CEMS/User/SelectByAccount",
+    url: "/CEMS/User/SelectByToken",
     method: "POST",
     params: {
-      Account: "111",
-      token: "tests",
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjIsInVzZXJ0eXBlIjoi5Li75Yqe5pa5IiwiYWNjb3VudCI6InVzZXIyIiwiaWF0IjoxNjg3OTU0MDE4LCJleHAiOjE2ODgwNDA0MTh9.ugMDdfXj9qOxetGtd-a9ZZ_L5I5oPcCcwM5kSbNvWsxoC3un5hO5521pkZTgmWCJ1r1MGLSM7KQ_wlElHivXbA",
     },
   });
 };
 export const SeleteByAccountLogin = (param) => {
   return axiosHttp.request({
-    url: "/CEMS/login/SeleteByAccount",
+    url: "/CEMS/login/SeleteByToken",
     method: "POST",
     params: {
-      Account: "111",
-      token: "tests",
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
       page: 1,
       size: 10,
     },
   });
 };
 export const UpdateByIdLog = (param) => {
+  console.log(token, "token1111111111111111111");
   return axiosHttp.request({
-    url: "/CEMS/User/UpdateById",
+    url: "/CEMS/User/UpdateByToken",
     method: "put",
     params: {
-      userName: "user1",
+      username: "user109",
       sex: "tests",
-      id: 82,
-      usertype: "赞助商",
-      account: "admin3",
+      token:
+        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
       unit: "tests",
       address: "tests",
       age: "tests",

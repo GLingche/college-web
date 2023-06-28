@@ -281,7 +281,7 @@
   </div>
 </template>
 <script>
-import {SeleteByAccountLog,SeleteByAccountLogin,UpdateByIdLog} from "../../api/test";
+import {SeleteByAccountLog,SeleteByAccountLogin,UpdateByIdLog,SelectAdminNotice} from "../../api/test";
 export default {
   components: {},
   created() {},
@@ -503,7 +503,7 @@ export default {
     // SeleteByAccountLogin().then((res) => {
     //   this.loginLog = res.data;
     // });
-    UpdateByIdLog().then((res) => {
+    SeleteByAccountLog().then((res) => {
       this.loginLog = res.data;
     });
   }

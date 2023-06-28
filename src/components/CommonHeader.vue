@@ -78,8 +78,14 @@ export default {
       isShow: false,
       operateFormLabel: [
         {
-          model: "name",
+          model: "UserName",
           label: "姓名",
+          type: "input",
+        },
+
+        {
+          model: "Nation",
+          label: "民族",
           type: "input",
         },
         {
@@ -88,47 +94,93 @@ export default {
           type: "input",
         },
         {
-          model: "sex",
+          model: "Unit",
+          label: "单位",
+          type: "input",
+        },
+        {
+          model: "Origin",
+          label: "籍贯",
+          type: "input",
+        },
+        {
+          model: "Number",
+          label: "手机号",
+          type: "input",
+        },
+        {
+          model: "Sex",
           label: "性别",
           type: "select",
           opts: [
             {
               label: "男",
-              value: 1,
+              value: "男",
             },
             {
               label: "女",
-              value: 0,
+              value: "女",
             },
           ],
         },
         {
-          model: "birth",
+          model: "birthday",
           label: "出生日期",
           type: "date",
         },
         {
-          model: "addr",
+          model: "MAddress",
           label: "地址",
           type: "input",
         },
         {
-          model: "type",
+          model: "UserType",
           label: "账号类型",
-          type: "input",
+          type: "select",
+          opts: [
+            {
+              label: "赞助商",
+              value: "赞助商",
+            },
+            {
+              label: "主办方",
+              value: "主办方",
+            },
+          ],
         },
         {
-          model: "identity",
-          label: "身份证号",
+          model: "DocumentType",
+          label: "证件类型",
+          type: "select",
+          opts: [
+            {
+              label: "中国大陆居民身份证",
+              value: "中国大陆居民身份证",
+            },
+            {
+              label: "港澳台特别行政区",
+              value: "港澳台特别行政区",
+            },
+          ],
+        },
+        {
+          model: "DocumentNumber",
+          label: "证件号",
           type: "input",
         },
       ],
       operateForm: {
-        name: "",
-        addr: "",
-        age: "",
-        birth: "",
-        sex: "",
+        UserName: "",
+        Sex: "",
+        Nation: "",
+        birthday: "",
+        DocumentType: "",
+        DocumentNumber: "",
+        Number: "",
+        Unit: "",
+        Origin: "",
+        MAddress: "",
+        UserType: "",
       },
       messCount: 9,
       userImg: require("../assets/images/user.png"),
@@ -143,26 +195,28 @@ export default {
       this.$store.commit("clearMenu");
       this.$router.push("/login");
     },
+    confirm() {
+      console.log(11111111111);
+      indentify(this.operateForm)
+        .then(({ data: res }) => {
+          console.log(res, "1111111111111111111111111");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   computed: {
     ...mapState({
       tags: (state) => state.tab.tabsList,
     }),
   },
-  confirm() {
-    // indentify(this.operateForm)
-    //   .then(({ data: res }) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+
+  created() {
+    // indentify().then(({data:res})=>{
+    //   console.log(res,"111111111111111111111");
+    // })
   },
-  created(){
-    indentify().then(({data:res})=>{
-      console.log(res,"111111111111111111111");
-    })
-  }
 };
 </script>
 
