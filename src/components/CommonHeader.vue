@@ -158,6 +158,11 @@ export default {
     //     console.log(err);
     //   });
   },
+  created(){
+    indentify().then(({data:res})=>{
+      console.log(res,"111111111111111111111");
+    })
+  }
 };
 </script>
 

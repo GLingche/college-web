@@ -17,8 +17,22 @@
       </div>
     </el-dialog>
     <div class="manger-header">
-      <el-button type="primary" @click="addUser">+ 新增</el-button>
-      <common-form
+      <el-input
+        placeholder="请输入内容"
+        v-model="input"
+        class="input-with-select"
+      >
+        <el-select v-model="select" slot="prepend" placeholder="请选择">
+          <el-option label="姓名" value="姓名"></el-option>
+          <el-option label="单位" value="单位"></el-option>
+        </el-select>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="getList(select, input)"
+        ></el-button>
+      </el-input>
+      <!-- <common-form
         :formLabel="formLabel"
         :form="searchForm"
         :inline="true"
@@ -27,16 +41,17 @@
         <el-button type="primary" @click="getList(searchForm.keyword)"
           >搜索</el-button
         >
-      </common-form>
+      </common-form> -->
     </div>
     <common-table
-      :control="true"
+      :control="false"
       :tableData="tableData"
       :tableLabel="tableLabel"
       :config="config"
       @changePage="getList()"
       @edit="editUser"
       @del="delUser"
+      :manager="false"
     ></common-table>
   </div>
 </template>
@@ -45,6 +60,16 @@
 import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
+import {
+  selectAds,
+  updateAds,
+  AupdateAds,
+  AcreateAds,
+  createAds,
+  DeleteAll,
+  UserUpdateById2,
+  SelectAdmin2,
+} from "../../api/test";
 export default {
   name: "User",
   components: {
@@ -53,17 +78,25 @@ export default {
   },
   data() {
     return {
+      input: "",
+      select: "",
       operateType: "add",
       isShow: false,
       operateFormLabel: [
         {
-          model: "name",
-          label: "姓名",
+          model: "userType",
+          label: "用户类型",
+          type: "input",
+        },
+
+        {
+          model: "account",
+          label: "账号",
           type: "input",
         },
         {
-          model: "age",
-          label: "年龄",
+          model: "adminName",
+          label: "姓名",
           type: "input",
         },
         {
@@ -82,22 +115,47 @@ export default {
           ],
         },
         {
-          model: "birth",
-          label: "出生日期",
-          type: "date",
+          model: "unit",
+          label: "单位",
+          type: "input",
         },
         {
-          model: "addr",
+          model: "address",
           label: "地址",
+          type: "input",
+        },
+        {
+          model: "age",
+          label: "年龄",
+          type: "input",
+        },
+        {
+          model: "number",
+          label: "手机号码",
+          type: "input",
+        },
+        {
+          model: "origin",
+          label: "籍贯",
+          type: "input",
+        },
+        {
+          model: "id",
+          label: "id",
           type: "input",
         },
       ],
       operateForm: {
-        name: "",
-        addr: "",
-        age: "",
-        birth: "",
+        userType: "",
+        account: "",
+        adminName: "",
         sex: "",
+        id: "",
+        unit: "",
+        address: "",
+        age: "",
+        number: "",
+        origin: "",
       },
       formLabel: [
         {
@@ -112,7 +170,7 @@ export default {
       tableData: [],
       tableLabel: [
         {
-          prop: "name",
+          prop: "adminName",
           label: "姓名",
         },
         {
@@ -120,33 +178,47 @@ export default {
           label: "年龄",
         },
         {
-          prop: "sexLabel",
+          prop: "sex",
           label: "性别",
         },
         {
-          prop: "birth",
+          prop: "birthday",
           label: "出生日期",
           width: 200,
         },
         {
-          prop: "addr",
+          prop: "maddress",
           label: "地址",
+          width: 320,
+        },
+        {
+          prop: "origin",
+          label: "籍贯",
+        },
+        {
+          prop: "unit",
+          label: "单位",
           width: 320,
         },
       ],
       config: {
         page: 1,
-        total: 30,
+        total: 15,
       },
     };
   },
   methods: {
     confirm() {
       if (this.operateType === "edit") {
-        this.$http.post("/user/edit", this.operateForm).then((res) => {
-          console.log(res);
+        UserUpdateById2(this.operateForm).then((res) => {
+          this.getList(this.select, this.input);
+          this.$message({
+            type: "success",
+            message: "成功",
+          });
           this.isShow = false;
-          this.getList();
+          console.log(res, "dfffffffffffff22222222222");
+          console.log(JSON.stringify(res.data.records), "dsfds");
         });
       } else {
         this.$http.post("/user/add", this.operateForm).then((res) => {
@@ -160,11 +232,16 @@ export default {
       this.isShow = true;
       this.operateType = "add";
       this.operateForm = {
-        name: "",
-        addr: "",
-        age: "",
-        birth: "",
+        usertype: "",
+        account: "",
+        userName: "",
         sex: "",
+        id: "",
+        unit: "",
+        address: "",
+        age: "",
+        number: "",
+        origin: "",
       };
     },
     editUser(row) {
@@ -180,38 +257,48 @@ export default {
       }).then(() => {
         const id = row.id;
         console.log(row, "this");
-        this.$http
-          .get("/user/del", {
-            params: { id },
-          })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "成功删除",
-            });
-            this.getList();
+        DeleteAll({
+          id: row.id,
+          userType: row.userType,
+        }).then((res) => {
+          this.getList(this.select, this.input);
+          this.$message({
+            type: "success",
+            message: "成功",
           });
+          console.log(res, "dfffffffffffff22222222222");
+          console.log(JSON.stringify(res.data.records), "dsfds");
+        });
       });
     },
-    getList(name = "") {
+    getList(type, input = "") {
       this.config.loading = true;
-      name ? (this.config.page = 1) : "";
       console.log(this.config.page, "test");
-      getUser({
+      SelectAdmin2({
         page: this.config.page,
-        name,
+        size: this.config.total,
+        token: "11fdafa",
+        sponsors: input,
+        type: type,
       }).then(({ data: res }) => {
-        this.tableData = res.list.map((item) => {
-          item.sexLabel = item.sex === 0 ? "女" : "男";
-          return item;
-        });
-        this.config.total = res.count;
+        this.tableData = res.records;
+        // this.config.total = res.count;
         this.config.loading = false;
       });
     },
   },
   created() {
-    this.getList();
+    this.getList(this.select, this.input);
+    // UserUpdateById(this.operateForm).then((res) => {
+    //   this.getList();
+    //   this.$message({
+    //     type: "success",
+    //     message: "成功",
+    //   });
+    //   this.isShow = false;
+    //   console.log(res, "dfffffffffffff22222222222");
+    //   console.log(JSON.stringify(res.data.records), "dsfds");
+    // });
   },
 };
 </script>
@@ -221,5 +308,15 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.el-input-group {
+  width: 50%;
+}
+::v-deep .el-select .el-input {
+  width: 130px;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
 }
 </style>

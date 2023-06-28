@@ -36,11 +36,11 @@
               <a href="#"><i class="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" v-model="form.username" />
+            <input type="email" placeholder="Email" v-model="form.Account" />
             <input
               type="password"
               placeholder="Password"
-              v-model="form.password"
+              v-model="form.Password"
             />
             <a href="#">Forgot your password?</a>
             <button @click="signIn">Sign In</button>
@@ -81,14 +81,14 @@
 
 <script>
 import Mock from "mockjs";
-import { getMenu } from "../../api/data";
+// import { getMenu } from "../../api/data";
 import { registerUser, login } from "../../api/test";
 export default {
   name: "login",
   data() {
     return {
       isIn: true,
-      form: {},
+      form: {how:'PC',ip:"192.155.13.7"},
       upFrom: {},
       rules: {
         username: [
@@ -107,13 +107,13 @@ export default {
     signUp() {
       console.log(this.form, "ss");
       this.$message.success("注册成功！");
-      // registerUser(this.upFrom)
-      //   .then(({ data: res }) => {
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      registerUser(this.upFrom)
+        .then(({ data: res }) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     changePlanel() {
       this.isIn = !this.isIn;
@@ -124,35 +124,36 @@ export default {
       return reg.test(this.form.username);
     },
     signIn() {
-      console.log(this.check());
-      // login(this.form)
-      //   .then(({ data: res }) => {
-      //     // console.log(res, "fdaf1111111111");
-      //     // res = JSON.parse(res);
-      //     // console.log(res, "fdaf1111111111");
-      //     this.$store.commit("clearMenu");
-      //     this.$store.commit("setMenu", res.data.menu);
-      //     this.$store.commit("setToken", res.data.token);
-      //     this.$store.commit("addMenu", this.$router);
-      //     this.$router.push({ name: "home" });
-      //     // console.log(res, "fdsfdsfs");
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-
-      getMenu(this.form).then(({ data: res }) => {
-        console.log(res);
-        if (res.code === 20000) {
+      // console.log(this.check());
+      console.log(this.form, "fdsfds");
+      login(this.form)
+        .then(({ data: res }) => {
+          console.log(res, "fdaf1111111111");
+          // res = JSON.parse(res);
+          // console.log(res, "fdaf1111111111");
           this.$store.commit("clearMenu");
           this.$store.commit("setMenu", res.data.menu);
           this.$store.commit("setToken", res.data.token);
           this.$store.commit("addMenu", this.$router);
           this.$router.push({ name: "home" });
-        } else {
-          this.$message.warning(res.data.message);
-        }
-      });
+          // console.log(res, "fdsfdsfs");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // getMenu(this.form).then(({ data: res }) => {
+      //   console.log(res);
+      //   if (res.code === 20000) {
+      //     this.$store.commit("clearMenu");
+      //     this.$store.commit("setMenu", res.data.menu);
+      //     this.$store.commit("setToken", res.data.token);
+      //     this.$store.commit("addMenu", this.$router);
+      //     this.$router.push({ name: "home" });
+      //   } else {
+      //     this.$message.warning(res.data.message);
+      //   }
+      // });
       // const token = Mock.random.guid();
       // this.$store.commit("setToken", token);
       // this.$router.push({ name: "home" });

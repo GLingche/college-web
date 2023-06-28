@@ -10,8 +10,8 @@
           </div>
         </div>
         <div class="login-info">
-          <p>上次登录的时间：<span>2022-2-4</span></p>
-          <p>上次登录的地点: <span>广州</span></p>
+          <p>上次登录的时间:<span>2023-5-10</span></p>
+          <p>上次登录的地点:<span>广州</span></p>
         </div>
       </el-card>
       <el-card style="margin-top: 20px; height: 460px">
@@ -84,81 +84,81 @@ export default {
       userImg: require("../../assets/images/user.png"),
       tableData: [
         {
-          name: "oppo",
+          name: "微信小程序大赛",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
         {
-          name: "vivo",
+          name: "ACM大赛",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
         {
-          name: "苹果",
+          name: "蓝桥杯",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
         {
-          name: "小米",
+          name: "羽毛球比赛",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
         {
-          name: "三星",
+          name: "网络安全知识竞赛",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
         {
-          name: "魅族",
+          name: "大学生创新创业大赛",
           todayBuy: 100,
           monthBuy: 300,
           totalBuy: 800,
         },
       ],
       tableLabel: {
-        name: "课程",
-        todayBuy: "今日购买",
-        monthBuy: "本月购买",
-        totalBuy: "总购买",
+        name: "赛事",
+        todayBuy: "今日赛事",
+        monthBuy: "本月赛事",
+        totalBuy: "总赛事",
       },
       countData: [
         {
-          name: "今日支付订单",
+          name: "今日赛事",
           value: 1234,
           icon: "success",
           color: "#2ec7c9",
         },
         {
-          name: "今日收藏订单",
+          name: "今日收藏赛事",
           value: 210,
           icon: "star-on",
           color: "#ffb980",
         },
         {
-          name: "今日未支付订单",
+          name: "今日收藏赛事",
           value: 1234,
           icon: "s-goods",
           color: "#5ab1ef",
         },
         {
-          name: "本月支付订单",
+          name: "今日赛事",
           value: 1234,
           icon: "success",
           color: "#2ec7c9",
         },
         {
-          name: "本月收藏订单",
+          name: "今日收藏赛事",
           value: 210,
           icon: "star-on",
           color: "#ffb980",
         },
         {
-          name: "本月未支付订单",
+          name: "今日赛事",
           value: 1234,
           icon: "s-goods",
           color: "#5ab1ef",

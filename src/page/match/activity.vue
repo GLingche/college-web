@@ -18,25 +18,33 @@
     </el-dialog>
     <div class="manger-header">
       <el-button type="primary" @click="addUser">+ 新增</el-button>
-      <common-form
-        :formLabel="formLabel"
-        :form="searchForm"
-        :inline="true"
-        ref="form"
+      <el-input
+        placeholder="请输入内容"
+        v-model="input"
+        class="input-with-select"
       >
-        <el-button type="primary" @click="getList(searchForm.keyword)"
-          >搜索</el-button
-        >
-      </common-form>
+        <el-select v-model="select" slot="prepend" placeholder="请选择">
+          <el-option label="姓名" value="姓名"></el-option>
+          <el-option label="事项" value="事项"></el-option>
+          <el-option label="类型" value="类型"></el-option>
+        </el-select>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="getList(select, input)"
+        ></el-button>
+      </el-input>
     </div>
     <common-table
       :tableData="tableData"
       :tableLabel="tableLabel"
       :config="config"
-      :control = "true"
+      :control="true"
       @changePage="getList()"
       @edit="editUser"
       @del="delUser"
+      @authManager="ChangeMatchState"
+      :manager="false"
     ></common-table>
   </div>
 </template>
@@ -45,6 +53,13 @@
 import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
+import {
+  SeleteAll,
+  UpdateById,
+  DeleteById,
+  ChangeMatchState,
+  BuildMatch,
+} from "../../api/test";
 export default {
   name: "Activity",
   components: {
@@ -53,51 +68,73 @@ export default {
   },
   data() {
     return {
+      input: "",
+      select: "",
       operateType: "add",
       isShow: false,
       operateFormLabel: [
         {
-          model: "name",
+          model: "unit",
           label: "单位",
           type: "input",
         },
         {
-          model: "age",
-          label: "单位编号",
+          model: "unitAddress",
+          label: "单位地址",
           type: "input",
         },
         {
-          model: "sex",
+          model: "id",
           label: "编号",
-          type: "select",
-          opts: [
-            {
-              label: "男",
-              value: 1,
-            },
-            {
-              label: "女",
-              value: 0,
-            },
-          ],
+          type: "input",
         },
         {
-          model: "birth",
-          label: "出生日期",
+          model: "type",
+          label: "类型",
+          type: "input",
+        },
+        {
+          model: "items",
+          label: "事项",
+          type: "input",
+        },
+        {
+          model: "matchTime",
+          label: "起始时间",
           type: "date",
         },
         {
-          model: "addr",
-          label: "地址",
+          model: "place",
+          label: "地点",
+          type: "input",
+        },
+        {
+          model: "number",
+          label: "编号",
+          type: "input",
+        },
+        {
+          model: "documentNumber",
+          label: "证件号码",
+          type: "input",
+        },
+        {
+          model: "state",
+          label: "状态",
           type: "input",
         },
       ],
       operateForm: {
-        name: "",
-        addr: "",
-        age: "",
-        birth: "",
-        sex: "",
+        unit: "",
+        id: "",
+        unitAddress: "",
+        type: "",
+        items: "",
+        matchTime: "",
+        place: "",
+        number: "",
+        documentNumber: "",
+        state: "",
       },
       formLabel: [
         {
@@ -112,44 +149,40 @@ export default {
       tableData: [],
       tableLabel: [
         {
-          prop: "name",
+          prop: "unit",
           label: "单位",
         },
         {
-          prop: "age",
-          label: "单位编号",
+          prop: "unitAddress",
+          label: "单位地址",
         },
         {
-          prop: "sexLabel",
+          prop: "id",
           label: "编号",
         },
         {
-          prop: "birth",
+          prop: "type",
           label: "类型",
           width: 200,
         },
         {
-          prop: "addrf",
+          prop: "items",
           label: "事项",
           width: 320,
         },
         {
-          prop: "addra",
+          prop: "matchTime",
           label: "起始时间",
           width: 320,
         },
         {
-          prop: "addre",
+          prop: "place",
           label: "地点",
           width: 320,
         },
-         {
-          prop: "addrr",
-          label: "状态",
-        },
         {
-          prop: "addrq",
-          label: "操作",
+          prop: "state",
+          label: "状态",
         },
       ],
       config: {
@@ -161,16 +194,20 @@ export default {
   methods: {
     confirm() {
       if (this.operateType === "edit") {
-        this.$http.post("/user/edit", this.operateForm).then((res) => {
-          console.log(res);
-          this.isShow = false;
-          this.getList();
+        UpdateById(this.operateForm).then(() => {
+          this.$message({
+            type: "success",
+            message: "成功改变",
+          });
+          this.getList(this.input, this.select);
         });
       } else {
-        this.$http.post("/user/add", this.operateForm).then((res) => {
-          console.log(res);
-          this.isShow = false;
-          this.getList();
+        BuildMatch(this.operateForm).then(() => {
+          this.$message({
+            type: "success",
+            message: "成功改变",
+          });
+          this.getList(this.input, this.select);
         });
       }
     },
@@ -178,11 +215,16 @@ export default {
       this.isShow = true;
       this.operateType = "add";
       this.operateForm = {
-        name: "",
-        addr: "",
-        age: "",
-        birth: "",
-        sex: "",
+        unit: "",
+        id: "",
+        unitAddress: "",
+        type: "",
+        items: "",
+        matchTime: "",
+        place: "",
+        number: "",
+        documentNumber: "",
+        state: "",
       };
     },
     editUser(row) {
@@ -196,40 +238,77 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        const id = row.id;
-        console.log(row, "this");
-        this.$http
-          .get("/user/del", {
-            params: { id },
-          })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "成功删除",
-            });
-            this.getList();
+        DeleteById({
+          id: row.id,
+        }).then(() => {
+          this.$message({
+            type: "success",
+            message: "成功改变",
           });
+          this.getList(this.input, this.select);
+        });
       });
     },
-    getList(name = "") {
+    getList(type = "", input = "") {
       this.config.loading = true;
       name ? (this.config.page = 1) : "";
       console.log(this.config.page, "test");
-      getUser({
+      SeleteAll({
         page: this.config.page,
-        name,
+        size: this.config.total,
+        token: "11fdafa",
+        sponsors: input,
+        type: type,
       }).then(({ data: res }) => {
-        this.tableData = res.list.map((item) => {
-          item.sexLabel = item.sex === 0 ? "女" : "男";
+        console.log(res, "thisacrivty");
+        res.records.map((item) => {
+          if (item.state == "Y") {
+            item.state = 1;
+          } else if (item.state == "N") {
+            item.state = 0;
+          }
           return item;
         });
-        this.config.total = res.count;
+        this.tableData = res.records;
+        // this.config.total = res.count;
         this.config.loading = false;
       });
     },
+
+    ChangeMatchState(row) {
+      console.log(row, "this.row");
+      ChangeMatchState({
+        id: row.id,
+      }).then(() => {
+        this.$message({
+          type: "success",
+          message: "成功改变",
+        });
+        // this.getList(this.input, this.select);
+      });
+    },
+    UpdateById(row) {
+      UpdateById().then(() => {
+        this.$message({
+          type: "success",
+          message: "成功改变",
+        });
+        this.getList(this.input, this.select);
+      });
+    },
+    DeleteById(row) {
+      DeleteById().then(() => {
+        this.$message({
+          type: "success",
+          message: "成功改变",
+        });
+        this.getList(this.input, this.select);
+      });
+    },
   },
+
   created() {
-    // this.getList();
+    this.getList(this.input, this.select);
   },
 };
 </script>
@@ -239,5 +318,15 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.el-input-group {
+  width: 50%;
+}
+::v-deep .el-select .el-input {
+  width: 130px;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
 }
 </style>

@@ -16,29 +16,17 @@
         <el-button type="primary" @click="confirm">确定</el-button>
       </div>
     </el-dialog>
-    <div class="manger-header">
-      <el-button type="primary" @click="addUser">+ 新增</el-button>
-      <common-form
-        :formLabel="formLabel"
-        :form="searchForm"
-        :inline="true"
-        ref="form"
-      >
-        <el-button type="primary" @click="getList(searchForm.keyword)"
-          >搜索</el-button
-        >
-      </common-form>
-    </div>
     <common-table
-      :control="true"
+      :control="false"
       :tableData="tableData"
       :tableLabel="tableLabel"
       :config="config"
       @changePage="getList()"
-      @edit="editUser"
       @del="delUser"
       @authManager="authManager"
       @cancal="cancal"
+      @cancal2="cancal2"
+      :isEdit="false"
     ></common-table>
     <el-dialog
       :visible.sync="managerDialog"
@@ -69,6 +57,19 @@
 import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
+import {
+  getUserInfo,
+  SelectUser,
+  SelectAdmin,
+  cancels,
+  Usercancels,
+  Enable,
+  selePMess,
+  changePMess,
+  delePMess,
+  DeleteAll,
+  SPUpUserType,
+} from "../../api/test";
 export default {
   name: "Account",
   components: {
@@ -81,6 +82,10 @@ export default {
       isShow: false,
       managerDialog: false,
       managerVO: {
+        id: {
+          label: "id",
+          value: "",
+        },
         tenantName: {
           label: "姓名",
           value: "",
@@ -95,43 +100,52 @@ export default {
         },
         managerNameNew: {
           label: "新账号类型",
-          value: "",
+          value: "管理员",
         },
       },
       operateFormLabel: [
         {
-          model: "name",
-          label: "姓名",
+          model: "adminName",
+          label: "管理员姓名",
           type: "input",
         },
         {
-          model: "age",
-          label: "年龄",
+          model: "userName",
+          label: "用户姓名",
           type: "input",
         },
         {
-          model: "sex",
-          label: "性别",
+          model: "state",
+          label: "状态",
           type: "select",
           opts: [
             {
-              label: "男",
+              label: "启用",
               value: 1,
             },
             {
-              label: "女",
+              label: "申请中",
               value: 0,
+            },
+            {
+              label: "已注销",
+              value: 2,
             },
           ],
         },
         {
-          model: "birth",
-          label: "出生日期",
-          type: "date",
+          model: "account",
+          label: "账号",
+          type: "input",
         },
         {
-          model: "addr",
-          label: "地址",
+          model: "userType",
+          label: "类型",
+          type: "input",
+        },
+        {
+          model: "number",
+          label: "手机号",
           type: "input",
         },
       ],
@@ -155,25 +169,29 @@ export default {
       tableData: [],
       tableLabel: [
         {
-          prop: "name",
-          label: "姓名",
+          prop: "adminName",
+          label: "管理员姓名",
         },
         {
-          prop: "age",
-          label: "年龄",
+          prop: "userName",
+          label: "用户姓名",
         },
         {
-          prop: "sexLabel",
-          label: "性别",
+          prop: "account",
+          label: "账号",
         },
         {
-          prop: "birth",
-          label: "出生日期",
+          prop: "state",
+          label: "状态",
+        },
+        {
+          prop: "userType",
+          label: "类型",
           width: 200,
         },
         {
-          prop: "addr",
-          label: "地址",
+          prop: "number",
+          label: "手机号",
           width: 320,
         },
       ],
@@ -184,6 +202,22 @@ export default {
     };
   },
   methods: {
+    //授权管理员
+    handleManager() {
+      SPUpUserType({
+        id: this.managerVO.id.value,
+        userType: this.managerVO.managerNameNew.value,
+      }).then((res) => {
+        this.$message({
+          type: "success",
+          message: "成功",
+        });
+        this.managerDialog = false;
+        this.getList();
+        console.log(res, "dfffffffffffff22222222222");
+        // console.log(JSON.stringify(res.data.records), "dsfds");
+      });
+    },
     confirm() {
       if (this.operateType === "edit") {
         this.$http.post("/user/edit", this.operateForm).then((res) => {
@@ -221,46 +255,121 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        const id = row.id;
         console.log(row, "this");
-        this.$http
-          .get("/user/del", {
-            params: { id },
-          })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "成功删除",
-            });
-            this.getList();
+        DeleteAll({
+          ID: row.id,
+          UserType: row.userType,
+        }).then((res) => {
+          this.getList();
+          this.$message({
+            type: "success",
+            message: "成功删除",
           });
+          console.log(res, "dfffffffffffff22222222222");
+          // console.log(JSON.stringify(res.data.records), "dsfds");
+        });
       });
     },
-    getList(name = "") {
+    async getList(name = "") {
+      let adminList = await this.SelectAdmin(name);
+      let userList = await this.SelectUser(name);
+
+      this.$nextTick(() => {
+        this.tableData = [...adminList, ...userList];
+        console.log(this.tableData, "this.tableData");
+      });
+    },
+    getUserInfo(name) {
       this.config.loading = true;
       name ? (this.config.page = 1) : "";
-      console.log(this.config.page, "test");
-      getUser({
+      return getUserInfo({
         page: this.config.page,
-        name,
-      }).then(({ data: res }) => {
-        this.tableData = res.list.map((item) => {
-          item.sexLabel = item.sex === 0 ? "女" : "男";
-          return item;
-        });
-        this.config.total = res.count;
-        this.config.loading = false;
+      }).then((res) => {
+        console.log(res, "dsfds");
       });
     },
-    authManager(row){
-        this.managerDialog = !this.managerDialog;
-    },
-    cancal(row){
+    authManager(row) {
+      console.log(row);
+      this.managerVO.id.value = row.id;
 
-    }
+      this.managerVO.managerPhoneOld.value = row.userType;
+      this.managerVO.tenantName.value = row.userName
+        ? row.userName
+        : row.adminName;
+      this.managerVO.managerNameOld.value = row.account;
+      this.managerDialog = !this.managerDialog;
+    },
+    cancal(row) {
+      this.$confirm("此操作将注销该账号，是否继续?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        console.log(row, "this");
+        cancels({
+          ID: row.id,
+          UserType: row.userType,
+        }).then((res) => {
+          this.$message({
+            type: "success",
+            message: "成功",
+          });
+          this.getList();
+          console.log(res, "dfffffffffffff22222222222");
+          // console.log(JSON.stringify(res.data.records), "dsfds");
+        });
+      });
+    },
+    cancal2(row) {
+      this.$confirm("此操作将启用该账号，是否继续?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        console.log(row, "this");
+        Enable({
+          ID: row.id,
+          UserType: row.userType,
+        }).then((res) => {
+          this.$message({
+            type: "success",
+            message: "成功",
+          });
+          this.getList();
+          console.log(res, "dfffffffffffff22222222222");
+          // console.log(JSON.stringify(res.data.records), "dsfds");
+        });
+      });
+    },
+
+    SelectUser(name) {
+      this.config.loading = true;
+      name ? (this.config.page = 1) : "";
+      return SelectUser({
+        page: this.config.page,
+      }).then((res) => {
+        console.log(JSON.stringify(res.data.records), "dsfds");
+        return res.data.records;
+      });
+    },
+
+    SelectAdmin(name) {
+      this.config.loading = true;
+      name ? (this.config.page = 1) : "";
+      return SelectAdmin({
+        page: this.config.page,
+      }).then((res) => {
+        console.log(res);
+        console.log(JSON.stringify(res.data.records), "dsfds");
+
+        return res.data.records;
+      });
+    },
   },
-  created() {
+
+  async created() {
     this.getList();
+    // this.handleManager();
   },
 };
 </script>
