@@ -78,6 +78,7 @@ export default {
   },
   data() {
     return {
+      userType: "",
       operateType: "add",
       isShow: false,
       managerDialog: false,
@@ -257,8 +258,8 @@ export default {
       }).then(() => {
         console.log(row, "this");
         DeleteAll({
-          ID: row.id,
-          UserType: row.userType,
+          id: row.id,
+          userType: row.userType,
         }).then((res) => {
           this.getList();
           this.$message({
@@ -369,6 +370,10 @@ export default {
 
   async created() {
     this.getList();
+    getusertype().then(({ data: res }) => {
+      this.userType = res.data;
+      console.log(res.data, "toetype");
+    });
     // this.handleManager();
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
     <el-dialog
-      :title="operateType === 'add' ? '新增用户' : '更新用户'"
+      :title="operateType === 'add' ? '新增奖品' : '更新奖品'"
       :visible.sync="isShow"
     >
       <common-form
@@ -54,6 +54,7 @@ import {
   seleteByPage,
   UpdatePrize,
   DeletePrize,
+  getusertype,
 } from "../../api/test";
 export default {
   name: "Price",
@@ -63,6 +64,7 @@ export default {
   },
   data() {
     return {
+      userType: "",
       operateType: "add",
       isShow: false,
       operateFormLabel: [
@@ -183,21 +185,39 @@ export default {
   methods: {
     confirm() {
       if (this.operateType === "edit") {
-        UpdatePrize(this.operateForm).then((res) => {
-          if (res.data) {
-            this.$message({
-              type: "success",
-              message: "成功",
-            });
-          } else {
-            this.$message({
-              type: "error",
-              message: "比赛已经开始，不能编辑奖品信息",
-            });
-          }
-          this.getList();
-          this.isShow = false;
-        });
+        if (!this.userType) {
+          UpdatePrize(this.operateForm).then((res) => {
+            if (res.data) {
+              this.$message({
+                type: "success",
+                message: "成功",
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "比赛已经开始，不能编辑奖品信息",
+              });
+            }
+            this.getList();
+            this.isShow = false;
+          });
+        } else {
+          adminUpdatePrize(this.operateForm).then((res) => {
+            if (res.data) {
+              this.$message({
+                type: "success",
+                message: "成功",
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "比赛已经开始，不能编辑奖品信息",
+              });
+            }
+            this.getList();
+            this.isShow = false;
+          });
+        }
       } else {
         InsertPrize(this.operateForm).then((res) => {
           if (res.data) {
@@ -279,6 +299,14 @@ export default {
     },
   },
   created() {
+    getusertype().then(({ data: res }) => {
+      if (res == "管理员") {
+        this.userType = true;
+      } else {
+        this.userType = false;
+      }
+      console.log(this.userType, "toetype去1111");
+    });
     this.getList();
   },
 };

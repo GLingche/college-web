@@ -1,6 +1,14 @@
 import axiosHttp from "./axiosHttp";
 import store from ".././store";
-let token = store.state.user.token;
+import Cookie from "js-cookie";
+let token =
+  Cookie.get("token") ||
+  sessionStorage.getItem("token") ||
+  localStorage.getItem("token");
+console.log(
+  sessionStorage.getItem("token"),
+  "token11111111111111111112222223222"
+);
 export const login = (param) => {
   console.log(param, "login");
   return axiosHttp.request({
@@ -49,12 +57,16 @@ export const registerUser = (param) => {
 
 export const indentify = (param) => {
   // console.log(param, "fdsfa");
+  console.log(
+    sessionStorage.getItem("token"),
+    "token11111111111111111112222223222"
+  );
   console.log(token, "up111111111");
   return axiosHttp.request({
     url: "/CEMS/Visitor/RealName",
     method: "post",
     params: {
-      token:token,
+      token: token,
       UserName: param.UserName,
       Sex: param.Sex,
       Nation: param.Nation,
@@ -311,8 +323,7 @@ export const BuildMatch = (param) => {
       Place: param.place,
       Number: param.number,
       DocumentNumber: param.documentNumber,
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjIsInVzZXJ0eXBlIjoi5Li75Yqe5pa5IiwiYWNjb3VudCI6InVzZXIyIiwiaWF0IjoxNjg3OTU0MDE4LCJleHAiOjE2ODgwNDA0MTh9.ugMDdfXj9qOxetGtd-a9ZZ_L5I5oPcCcwM5kSbNvWsxoC3un5hO5521pkZTgmWCJ1r1MGLSM7KQ_wlElHivXbA",
+      token: token,
     },
   });
 };
@@ -346,8 +357,7 @@ export const SelectAdminNotice = (param) => {
     url: "CEMS/Vetting/SeleteByToken",
     method: "POST",
     params: {
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
+      token: token,
       page: param.page,
       size: param.size,
     },
@@ -359,8 +369,7 @@ export const SelectByAccount = (param) => {
     url: "/CEMS/Notice/SelectByToken",
     method: "POST",
     params: {
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
+      token: token,
       page: param.page,
       size: param.size,
     },
@@ -395,7 +404,7 @@ export const ChangeUserState = (param) => {
     url: "/CEMS/Vetting/ChangeUserState",
     method: "PUT",
     params: {
-      id: 24,
+      id: param,
       State: "Y",
     },
   });
@@ -407,8 +416,7 @@ export const SeleteByAccountLog = (param) => {
     url: "/CEMS/User/SelectByToken",
     method: "POST",
     params: {
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjIsInVzZXJ0eXBlIjoi5Li75Yqe5pa5IiwiYWNjb3VudCI6InVzZXIyIiwiaWF0IjoxNjg3OTU0MDE4LCJleHAiOjE2ODgwNDA0MTh9.ugMDdfXj9qOxetGtd-a9ZZ_L5I5oPcCcwM5kSbNvWsxoC3un5hO5521pkZTgmWCJ1r1MGLSM7KQ_wlElHivXbA",
+      token: token,
     },
   });
 };
@@ -417,10 +425,9 @@ export const SeleteByAccountLogin = (param) => {
     url: "/CEMS/login/SeleteByToken",
     method: "POST",
     params: {
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
+      token: token,
       page: 1,
-      size: 10,
+      size: 50,
     },
   });
 };
@@ -430,15 +437,14 @@ export const UpdateByIdLog = (param) => {
     url: "/CEMS/User/UpdateByToken",
     method: "put",
     params: {
-      username: "user109",
-      sex: "tests",
-      token:
-        "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtZXNzYWdlIiwiaWQiOjMyLCJ1c2VydHlwZSI6IueuoeeQhuWRmCIsImFjY291bnQiOiIxMTEiLCJpYXQiOjE2ODc5NTMyODAsImV4cCI6MTY4ODAzOTY4MH0.KuByREC7he24INKj_gILIZz0SY8PsEEVe8D3hb52aEUC71VAFTD3dw55BuX8V_fcG5-KrMVPgGvOOijxNAJycw",
-      unit: "tests",
-      address: "tests",
-      age: "tests",
-      number: "tests",
-      origin: "tests",
+      username: param.adminName || param.userName,
+      sex: param.sex,
+      token: token,
+      unit: param.unit,
+      address: param.address,
+      age: param.age,
+      number: param.number,
+      origin: param.origin,
     },
   });
 };
@@ -768,3 +774,23 @@ export const DeletePrize = (param) => {
 };
 
 //赛事选手
+
+export const refresh = (param) => {
+  return axiosHttp.request({
+    url: "/CEMS/login/refresh",
+    method: "POST",
+    params: {
+      token: token,
+    },
+  });
+};
+
+export const getusertype = (param) => {
+  return axiosHttp.request({
+    url: "/CEMS/login/getusertype",
+    method: "POST",
+    params: {
+      token: token,
+    },
+  });
+};

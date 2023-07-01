@@ -5,12 +5,14 @@
         <div class="user">
           <img :src="userImg" />
           <div class="usrinfo">
-            <p class="name">Admin</p>
-            <p class="access">超级管理员</p>
+            <p class="name">{{ UserName }}</p>
+            <p class="access">{{ UserType }}</p>
           </div>
         </div>
         <div class="login-info">
-          <p>上次登录的时间:<span>2023-5-10</span></p>
+          <p>
+            上次登录的时间:<span>{{ loginTime }}</span>
+          </p>
           <p>上次登录的地点:<span>广州</span></p>
         </div>
       </el-card>
@@ -73,7 +75,12 @@
 import { getData } from "../../api/data";
 // import * as echarts from 'echarts'
 import Echart from "../../components/ECharts.vue";
-
+import {
+  indentify,
+  refresh,
+  getusertype,
+  SeleteByAccountLogin,
+} from "../../api/test";
 export default {
   name: "home",
   components: {
@@ -81,6 +88,9 @@ export default {
   },
   data() {
     return {
+      UserName: "",
+      UserType: "",
+      loginTime: "",
       userImg: require("../../assets/images/user.png"),
       tableData: [
         {
@@ -178,6 +188,19 @@ export default {
         },
       },
     };
+  },
+  created() {
+    getusertype().then(({ data: res }) => {
+      this.UserType = res;
+      console.log(res, "toetype");
+    });
+    SeleteByAccountLogin().then((res) => {
+      this.UserName = res.data.records[0].account;
+
+      this.loginTime = res.data.records[0].time;
+      console.log(res, "111111111111222111");
+      // this.loginLog = res.data.records;
+    });
   },
   mounted() {
     getData().then((res) => {

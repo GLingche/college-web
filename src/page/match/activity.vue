@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
     <el-dialog
-      :title="operateType === 'add' ? '新增用户' : '更新用户'"
+      :title="operateType === 'add' ? '新增赛事活动' : '更新赛事活动'"
       :visible.sync="isShow"
     >
       <common-form
@@ -39,7 +39,7 @@
       :tableData="tableData"
       :tableLabel="tableLabel"
       :config="config"
-      :control="true"
+      :control="userType"
       @changePage="getList()"
       @edit="editUser"
       @del="delUser"
@@ -54,6 +54,7 @@ import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
 import {
+  getusertype,
   SeleteAll,
   UpdateById,
   DeleteById,
@@ -68,6 +69,7 @@ export default {
   },
   data() {
     return {
+      userType: "",
       input: "",
       select: "",
       operateType: "add",
@@ -199,6 +201,7 @@ export default {
             type: "success",
             message: "成功改变",
           });
+          this.isShow = false;
           this.getList(this.input, this.select);
         });
       } else {
@@ -207,6 +210,7 @@ export default {
             type: "success",
             message: "成功改变",
           });
+          this.isShow = false;
           this.getList(this.input, this.select);
         });
       }
@@ -308,7 +312,25 @@ export default {
   },
 
   created() {
+    getusertype().then(({ data: res }) => {
+      if (res == "管理员") {
+        this.userType = true;
+      } else {
+        this.userType = false;
+      }
+      console.log(this.userType, "toetype去1111");
+    });
     this.getList(this.input, this.select);
+  },
+  beforeMount() {
+    getusertype().then(({ data: res }) => {
+      if (res == "管理员") {
+        this.userType = true;
+      } else {
+        this.userType = false;
+      }
+      console.log(this.userType, "toetype去1111");
+    });
   },
 };
 </script>

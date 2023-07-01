@@ -67,7 +67,7 @@
 <script>
 import CommonForm from "./CommonForm.vue";
 import { mapState } from "vuex";
-import { indentify } from "../api/test";
+import { indentify, refresh, getusertype,SeleteByAccountLogin } from "../api/test";
 export default {
   name: "CommonHeader",
   components: {
@@ -76,6 +76,9 @@ export default {
   data() {
     return {
       isShow: false,
+      UserName:'',
+      UserType:'',
+      loginTime:'',
       operateFormLabel: [
         {
           model: "UserName",
@@ -200,6 +203,11 @@ export default {
       indentify(this.operateForm)
         .then(({ data: res }) => {
           console.log(res, "1111111111111111111111111");
+          this.$message({
+            type: "success",
+            message: "发送成功",
+          });
+          this.isShow = false;
         })
         .catch((err) => {
           console.log(err);
@@ -213,9 +221,22 @@ export default {
   },
 
   created() {
-    // indentify().then(({data:res})=>{
-    //   console.log(res,"111111111111111111111");
-    // })
+    getusertype().then(({ data: res }) => {
+      this.UserType = res
+      console.log(res, "toetype");
+    });
+    // refresh().then(({ data: res }) => {
+    //   console.log(res, "111111111111111111111");
+    //   if (res == 3000) {
+    //     return;
+    //   }
+    //   if (res.data.menu) {
+    //     console.log(res,"22222222222222222222")
+    //     this.$store.commit("setMenu", res.data.menu);
+    //     this.$store.commit("setToken", res.data.token);
+    //     // this.$store.commit("addMenu", this.$router);
+    //   }
+    // });
   },
 };
 </script>

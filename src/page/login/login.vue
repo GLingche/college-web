@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       isIn: true,
-      form: {how:'PC',ip:"192.155.13.7"},
+      form: { how: "PC", ip: "192.155.13.7" },
       upFrom: {},
       rules: {
         username: [
@@ -105,11 +105,11 @@ export default {
   },
   methods: {
     signUp() {
-      console.log(this.form, "ss");
-      this.$message.success("注册成功！");
       registerUser(this.upFrom)
         .then(({ data: res }) => {
-          console.log(res);
+          this.changePlanel();
+          console.log(this.form, "ss");
+          this.$message.success("注册成功！");
         })
         .catch((err) => {
           console.log(err);
@@ -128,7 +128,11 @@ export default {
       console.log(this.form, "fdsfds");
       login(this.form)
         .then(({ data: res }) => {
-          console.log(res, "fdaf1111111111");
+          console.log(res, "fdaf1111111111111111");
+          console.log(res, "fdaf1111111111111111");
+          console.log(res, "fdaf1111111111111111");
+          console.log(res.data.token, "fdaf1111111111111111");
+
           // res = JSON.parse(res);
           // console.log(res, "fdaf1111111111");
           this.$store.commit("clearMenu");

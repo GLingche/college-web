@@ -43,7 +43,7 @@
           >
           <el-switch
             style="margin-left: 16px"
-            v-if="show"
+            v-show="control"
             :active-value="1"
             :inactive-value="0"
             v-model="scope.row.state"
@@ -74,10 +74,7 @@ export default {
     tableData: Array,
     tableLabel: Array,
     config: Object,
-    control: {
-      type: Boolean,
-      default: true,
-    },
+    control: Boolean,
     manager: {
       type: Boolean,
       default: true,
@@ -110,9 +107,9 @@ export default {
           this.$emit("authManager", row);
         })
         .catch(() => {
-          if(row.state == 1){
-            row.state = 0
-          }else{
+          if (row.state == 1) {
+            row.state = 0;
+          } else {
             row.state = 1;
           }
         });

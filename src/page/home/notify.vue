@@ -14,11 +14,8 @@
           @click="onTypeChange('platform')"
           >通知公告</el-button
         >
-        <el-button type="" id="warring" @click="onTypeChange('warring')"
+        <el-button type="" id="warring" @click="onTypeChange('approval')"
           >审批</el-button
-        >
-        <el-button type="" id="approval" @click="onTypeChange('approval')"
-          >比赛消息</el-button
         >
       </div>
       <div class="msg-ctrl">
@@ -54,7 +51,7 @@
               v-model="item.selected"
               @change="onValueChange(item.id, item.selected)"
             ></el-checkbox>
-            <div class="msg-tip-icon" v-show="!item.isRead"></div>
+            <!-- <div class="msg-tip-icon" v-show="!item.isRead"></div> -->
             <span>{{ item.message }}</span>
           </div>
           <div class="item-content" @click="readMsg(item)">
@@ -71,11 +68,11 @@
               v-model="item.selected"
               @change="onValueChange(item.id, item.selected)"
             ></el-checkbox>
-            <div class="msg-tip-icon" v-show="!item.isChecked"></div>
-            <span>{{ item.title }}</span>
+            <!-- <div class="msg-tip-icon" v-show="!item.isChecked"></div> -->
+            <span>{{ item.message }}</span>
           </div>
           <div class="item-content" @click="readMsg(item)">
-            <span v-html="item.context"></span>
+            <span v-html="item.time"></span>
           </div>
           <span class="msg-item-btn">
             <el-button type="text" @click="onApproval(item.id, true, false)"
@@ -114,7 +111,14 @@
 </template>
 <script>
 import Pagin from "../../components/pagination.vue"; //分页组件
-import { SelectAdminNotice, SelectUserNotice ,ChangeUserState,SelectByAccount,SeleteByUserType,ChangeMatchState} from "../../api/test";
+import {
+  SelectAdminNotice,
+  SelectUserNotice,
+  ChangeUserState,
+  SelectByAccount,
+  SeleteByUserType,
+  ChangeMatchState,
+} from "../../api/test";
 export default {
   components: { Pagin },
   created() {
@@ -128,12 +132,13 @@ export default {
       noRead: 0,
       msgList: [],
       examineList: [],
+      temp: [],
       selectedItem: [],
       checkAll: false,
       pageConfig: {
         total: 0,
         index: 1,
-        size: 8,
+        size: 50,
       },
       btnActive: false,
 
@@ -142,6 +147,23 @@ export default {
     };
   },
   methods: {
+    onTypeChange(type) {
+      console.log(type, "1111111111111111111");
+      const btnGroup = this.$el.querySelector(".msg-type").children;
+      console.log(btnGroup, "1111111111111111111");
+      const btns = [...btnGroup];
+      console.log(btns, "1111111111111111111");
+      const className = "el-button--primary";
+      btns.forEach((e) => {
+        if (e.id == type) {
+          e.classList.add(className);
+        } else {
+          e.classList.remove(className);
+        }
+      });
+      console.log(type, "11111111111111111114324");
+      this.msgType = type;
+    },
     SelectAdminNotice() {
       SelectAdminNotice({
         page: this.pageConfig.index,
@@ -153,19 +175,47 @@ export default {
     goBack() {
       this.$router.push({ path: "/home" });
     },
-  },
-  created(){
-// ChangeMatchState().then((res) => {
-//       console.log(res);
-//       this.msgList = res.data;
-//     });
-     SelectByAccount({
+    onApproval(id) {
+      ChangeUserState(id)
+        .then((res) => {
+          this.$message({
+            type: "success",
+            message: "成功改变改审核状态",
+          });
+          console.log(res, "thisqqqqqqqqqqqqqqqqqqqq");
+          this.getList();
+        })
+        .catch((err) => {
+          this.$message({
+            type: "error",
+            message: "修改状态异常",
+          });
+        });
+    },
+
+    getList() {
+      SelectByAccount({
         page: this.pageConfig.index,
         size: this.pageConfig.size,
       }).then((res) => {
         console.log(res);
         this.msgList = res.data.records;
       });
+      SelectAdminNotice({
+        page: this.pageConfig.index,
+        size: this.pageConfig.size,
+      }).then((res) => {
+        console.log(res, "111111111111111");
+        this.examineList = res.data.records;
+      });
+    },
+  },
+  created() {
+    this.getList();
+    // ChangeMatchState().then((res) => {
+    //       console.log(res);
+    //       this.msgList = res.data;
+    //     });
     // SelectByAccount().then((res) => {
     //   console.log(res);
     //   this.msgList = res.data;
@@ -173,10 +223,14 @@ export default {
     // ChangeUserState().then((res) => {
     //   console.log(res,"thisqqqqqqqqqqqqqqqqqqqq");
     // });
-  }
+  },
 };
 </script>
 <style lang="scss">
+li {
+  list-style: none;
+}
+
 .notify {
   position: relative;
   top: 0;

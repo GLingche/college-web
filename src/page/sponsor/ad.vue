@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
     <el-dialog
-      :title="operateType === 'add' ? '新增用户' : '更新用户'"
+      :title="operateType === 'add' ? '新增广告' : '更新广告'"
       :visible.sync="isShow"
     >
       <common-form
@@ -47,6 +47,7 @@ import CommonForm from "../../components/CommonForm.vue";
 import CommonTable from "../../components/CommonTable.vue";
 import { getUser } from "../../api/data";
 import {
+  getusertype,
   selectAds,
   updateAds,
   AupdateAds,
@@ -63,6 +64,7 @@ export default {
   },
   data() {
     return {
+      userType: "",
       operateType: "add",
       isShow: false,
       operateFormLabel: [
@@ -171,31 +173,36 @@ export default {
   methods: {
     confirm() {
       if (this.operateType === "edit") {
-        updateAds(this.operateForm).then((res) => {
-          if (res.data) {
+        if (!this.userType) {
+          updateAds(this.operateForm).then((res) => {
+            if (res.data) {
+              this.$message({
+                type: "success",
+                message: "成功",
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "比赛已经开始，不能编辑广告信息",
+              });
+            }
+            this.getList();
+            this.isShow = false;
+          });
+        } else {
+          AupdateAds(this.operateForm).then((res) => {
+            this.getList();
             this.$message({
               type: "success",
               message: "成功",
             });
-          } else {
-            this.$message({
-              type: "error",
-              message: "比赛已经开始，不能编辑广告信息",
-            });
-          }
-          this.getList();
-          this.isShow = false;
-        });
-        // AupdateAds(this.operateForm).then((res) => {
-        //   this.getList();
-        //   this.$message({
-        //     type: "success",
-        //     message: "成功",
-        //   });
-        //   this.isShow = false;
-        //   console.log(res, "dfffffffffffff22222222222");
-        //   console.log(JSON.stringify(res.data.records), "dsfds");
-        // });
+            this.isShow = false;
+            console.log(res, "dfffffffffffff22222222222");
+            console.log(JSON.stringify(res.data.records), "dsfds");
+          });
+        }
+        this.getList();
+        this.isShow = false;
       } else {
         createAds(this.operateForm).then((res) => {
           if (res.data) {
@@ -242,39 +249,41 @@ export default {
         type: "warning",
       }).then(() => {
         console.log(row, "this");
-
-        deleteAds({
-          id: row.id,
-          adsID: row.adsID,
-          UAccount: "user1",
-        }).then((res) => {
-          if (res.data) {
+        if (!this.userType) {
+          deleteAds({
+            id: row.id,
+            adsID: row.adsID,
+            UAccount: "user1",
+          }).then((res) => {
+            if (res.data) {
+              this.getList();
+              this.$message({
+                type: "success",
+                message: "成功删除",
+              });
+            }
+            {
+              this.$message({
+                type: "error",
+                message: "比赛已经开始，不能删除广告信息",
+              });
+            }
+            console.log(res, "dfffffffffffff22222222222");
+            console.log(JSON.stringify(res.data.records), "dsfds");
+          });
+        } else {
+          AdeleteAds({
+            id: row.id,
+          }).then((res) => {
             this.getList();
             this.$message({
               type: "success",
               message: "成功删除",
             });
-          }
-          {
-            this.$message({
-              type: "error",
-              message: "比赛已经开始，不能删除广告信息",
-            });
-          }
-          console.log(res, "dfffffffffffff22222222222");
-          console.log(JSON.stringify(res.data.records), "dsfds");
-        });
-        // AdeleteAds({
-        //   id: row.id,
-        // }).then((res) => {
-        //   this.getList();
-        //   this.$message({
-        //     type: "success",
-        //     message: "成功删除",
-        //   });
-        //   console.log(res, "dfffffffffffff22222222222");
-        //   console.log(JSON.stringify(res.data.records), "dsfds");
-        // });
+            console.log(res, "dfffffffffffff22222222222");
+            console.log(JSON.stringify(res.data.records), "dsfds");
+          });
+        }
       });
     },
     getList(name = "") {
@@ -293,6 +302,14 @@ export default {
     },
   },
   created() {
+    getusertype().then(({ data: res }) => {
+      if (res == "管理员") {
+        this.userType = true;
+      } else {
+        this.userType = false;
+      }
+      console.log(this.userType, "toetype去1111");
+    });
     this.getList();
   },
 };

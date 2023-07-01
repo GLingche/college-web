@@ -3,10 +3,10 @@
     <div class="header">
       <i class="el-icon-arrow-left"></i>
       <span class="btn" @click="$router.push({ path: '/home' })">返回</span>
-      <span class="content" >个人账号信息</span>
+      <span class="content">个人账号信息</span>
     </div>
     <el-card class="profile-card">
-      <div slot="header" >个人账号信息</div>
+      <div slot="header">个人账号信息</div>
       <div class="title">
         <span>基本信息</span>
       </div>
@@ -20,27 +20,35 @@
         <div class="base-info-item">
           <div class="flex">
             <div class="key">用户姓名：</div>
-            <div class="value">{{ accountInfo.realname }}</div>
+            <div class="value">
+              {{ accountInfo.adminName || accountInfo.userName }}
+            </div>
           </div>
-          <el-button type="text" @click="openModifyDialog('修改姓名', 'name')"
+          <el-button
+            type="text"
+            @click="openModifyDialog('修改姓名', 'adminName')"
             >修改</el-button
           >
         </div>
         <div class="base-info-item">
           <div class="flex">
             <div class="key">单位：</div>
-            <div class="value">{{ accountInfo.username }}</div>
+            <div class="value">{{ accountInfo.unit }}</div>
           </div>
-          <el-button type="text" @click="changePhone">修改</el-button>
+          <el-button
+            type="text"
+            @click="openModifyDialog('修改所属单位', 'unit')"
+            >修改</el-button
+          >
         </div>
         <div class="base-info-item">
           <div class="flex">
             <div class="key">手机号码：</div>
-            <div class="value">{{ accountInfo.deptName }}</div>
+            <div class="value">{{ accountInfo.number }}</div>
           </div>
           <el-button
             type="text"
-            @click="openModifyDialog('修改所属手机号码', 'depart')"
+            @click="openModifyDialog('修改所属手机号码', 'number')"
             >修改</el-button
           >
         </div>
@@ -53,13 +61,13 @@
         <div class="base-info-item">
           <div class="flex">
             <div class="key">编号：</div>
-            <div class="value">{{ accountInfo.userno }}</div>
+            <div class="value">{{ accountInfo.id }}</div>
           </div>
         </div>
         <div class="base-info-item">
           <div class="flex">
             <div class="key">籍贯：</div>
-            <div class="value">{{ accountInfo.userno }}</div>
+            <div class="value">{{ accountInfo.origin }}</div>
           </div>
         </div>
       </div>
@@ -73,7 +81,7 @@
         <el-table-column
           label="登录方式"
           width="auto"
-          prop="loginWay"
+          prop="how"
         ></el-table-column>
         <el-table-column
           label="登录IP"
@@ -83,7 +91,7 @@
         <el-table-column
           label="创建时间"
           width="auto"
-          prop="loginTime"
+          prop="time"
         ></el-table-column>
       </el-table>
     </el-card>
@@ -219,37 +227,35 @@
       :show-close="true"
     >
       <el-form :model="operationForm" :rules="operationRules">
-        <el-form-item v-if="operationType.value == 'name'" prop="name">
+        <el-form-item
+          v-if="
+            operationType.value == 'adminName' ||
+            operationType.value == 'userName'
+          "
+          prop="adminName"
+        >
           <el-input
-            v-model="operationForm.name"
-            placeholder="请输入新的名字"
+            v-model="operationForm.adminName"
+            placeholder="请输入"
           ></el-input>
         </el-form-item>
-        <el-form-item v-else>
-          <el-select
-            v-model="operationForm.currentValue"
-            @change="
-              onCurrentValueChange(
-                operationForm.currentValue,
-                operationType.value
-              )
-            "
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item v-if="operationType.value == 'unit'" :prop="unit">
+          <el-input
+            v-model="operationForm.unit"
+            placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-if="operationType.value == 'number'" :prop="number">
+          <el-input
+            v-model="operationForm.number"
+            placeholder="请输入"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <div class="dialog-btn">
             <el-button @click="closeModifyDialog">取消</el-button>
             <el-button
               type="primary"
-              :disabled="operationBtn"
               @click="onSubmitOperation(operationType.value)"
               >确定</el-button
             >
@@ -281,7 +287,11 @@
   </div>
 </template>
 <script>
-import {SeleteByAccountLog,SeleteByAccountLogin,UpdateByIdLog,SelectAdminNotice} from "../../api/test";
+import {
+  SeleteByAccountLog,
+  SeleteByAccountLogin,
+  UpdateByIdLog,
+} from "../../api/test";
 export default {
   components: {},
   created() {},
@@ -495,18 +505,47 @@ export default {
       ],
     };
   },
-  methods: {},
-  created(){
-    // SeleteByAccountLog().then((res) => {
-    //   this.loginLog = res.data;
-    // });
-    // SeleteByAccountLogin().then((res) => {
-    //   this.loginLog = res.data;
-    // });
-    SeleteByAccountLog().then((res) => {
-      this.loginLog = res.data;
-    });
-  }
+  methods: {
+    onSubmitOperation(type) {
+      console.log(this.operationForm, this.operationType.value, "1afatestests");
+       UpdateByIdLog(this.operationForm).then((res) => {
+          console.log(res, "111111111111111");
+          this.getList();
+        });
+      this.modifyDialog = false;
+    },
+    getList() {
+      SeleteByAccountLogin().then((res) => {
+        console.log(res, "111111111111222111");
+        this.loginLog = res.data.records;
+      });
+      SeleteByAccountLog().then((res) => {
+        console.log(res, "111111111111111");
+        this.accountInfo = res.data.records[0];
+        this.operationForm = res.data.records[0];
+      });
+    },
+    openModifyDialog(label, value) {
+      this.operationType = { label, value };
+      this.modifyDialog = true;
+      switch (value) {
+        case "adminName":
+          this.operationForm.adminName = this.accountInfo.adminName;
+          break;
+        case "unit":
+          this.operationForm.unit = this.accountInfo.unit;
+          break;
+        case "number":
+          this.operationForm.number = this.accountInfo.number;
+          break;
+        default:
+          break;
+      }
+    },
+  },
+  created() {
+    this.getList();
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -711,10 +750,10 @@ export default {
   }
 }
 
-.user{
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    margin-left: 12px;
+.user {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  margin-left: 12px;
 }
 </style>
